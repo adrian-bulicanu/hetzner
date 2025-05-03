@@ -1,1 +1,0 @@
-sudo mkdir immich-upload

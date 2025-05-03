@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  ryot-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    container_name: ryot-db
+    volumes:
+      - /home/user/ryot:/var/lib/postgresql/data
+    environment:
+      - TZ=Europe/Chisinau
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  ryot:
+    image: ignisda/ryot:v8
+    container_name: ryot
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - TZ=Europe/Chisinau
+      - SERVER_ADMIN_ACCESS_TOKEN=11ebb3ae554fa9867bff
+      - DATABASE_URL=postgres://postgres:postgres@ryot-db:5432/postgres
