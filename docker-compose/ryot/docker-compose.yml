@@ -1,12 +1,10 @@
-version: "3.7"
-
 services:
   ryot-db:
-    image: postgres:16-alpine
+    image: postgres:18-alpine # at-least version 15 is required
     restart: unless-stopped
     container_name: ryot-db
     volumes:
-      - /home/user/ryot:/var/lib/postgresql/data
+      - postgres_storage:/var/lib/postgresql
     environment:
       - TZ=Europe/Chisinau
       - POSTGRES_DB=postgres
@@ -14,12 +12,19 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   ryot:
-    image: ignisda/ryot:v10
+    image: ignisda/ryot:v10 # or ghcr.io/ignisda/ryot:v10
+    pull_policy: always
     container_name: ryot
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
       - TZ=Europe/Chisinau
-      - SERVER_ADMIN_ACCESS_TOKEN=11ebb3ae554fa9867bff
-      - DATABASE_URL=postgres://postgres:postgres@ryot-db:5432/postgres
+      - DATABASE_URL=postgres://postgres:postgres@ryot-db:5432/postgres # REQUIRED
+      - SERVER_ADMIN_ACCESS_TOKEN=asdfsdafsdfdsf # REQUIRED: set to a long random string
+      - DISABLE_TELEMETRY=true
+      - MOVIES_AND_SHOWS_TMDB_ACCESS_TOKEN=eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhYzk0NTI1MmVlNDU0ODExZjBiNGYxNjFmMTUwODZmYiIsIm5iZiI6MTc1NjA0MDE5MS42NjYsInN1YiI6IjY4YWIwYmZmMDkxMWNiODI0ZjZjZTU1MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.tECIC1utYqBuWXHIPAEkZVt8TwJKwbO7tQlgDz-vsnk
+      - SERVER_IMPORTER_TRAKT_CLIENT_ID=29be89b046cf655ce9f72fc60c5eb648d01de6808cd6892416da2c5ff53eb50f
+
+volumes:
+  postgres_storage:
